@@ -2,8 +2,6 @@ import { test, expect } from '@playwright/test';
 import { selectCheckbox } from '../action/Actions';
 import { checkboxName } from '../data/Actions';
 
-// toey
-
 test('Function Checkbox', async ({ page }) => {
   await page.goto('https://runbike-event.web.app/login');
   await page.getByLabel('อีเมลหรือเบอร์โทรศัพท์').fill('0888614919');

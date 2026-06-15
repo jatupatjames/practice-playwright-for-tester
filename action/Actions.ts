@@ -6,3 +6,7 @@ export async function selectCheckbox(page: Page, checkboxName: string) {
     await expect(checkbox).toBeChecked();
     
 }
+
+export async function inputValue(locator, value) {
+    await locator.fill(value);
+  }

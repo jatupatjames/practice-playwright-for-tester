@@ -56,6 +56,7 @@ test('Function Checkbox', async ({ page }) => {
   await selectCheckbox(page, checkboxName.AnnualMember);
   await page.pause();
   //test fetch new data on other pc
+  //test
 
 }
 );

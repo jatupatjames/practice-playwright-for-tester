@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { forgetPassword, login } from '../action/auth';
-import { loginInfo , forgetInfo } from '../data/auth';
+import { loginInfo } from '../data/auth';
 import { getOtpFromDb } from '../data/db';
 
 //test
@@ -11,5 +11,5 @@ test.skip('Login', async ({ page }) => {
 });
 
 test('Forgot Password', async ({ page }) => {
-  await forgetPassword(page, forgetInfo.forgetEmail, forgetInfo.newPassword);
+  await forgetPassword(page, 'sarunyoochimmalee@gmail.com', 'ABC777');
 });

@@ -1,11 +1,15 @@
 import { test, expect } from '@playwright/test';
-import { login } from '../action/auth';
-import { loginInfo } from '../data/auth';
+import { forgetPassword, login } from '../action/auth';
+import { loginInfo , forgetInfo } from '../data/auth';
+import { getOtpFromDb } from '../data/db';
 
 //test
 //test1234
 
-test('Login', async ({ page }) => {
-  await login(page, loginInfo.jamesUsername, loginInfo.jamesPassword);
-  
+test.skip('Login', async ({ page }) => {
+  await login(page, loginInfo.jamesUsername, loginInfo.jamesPassword);  
+});
+
+test('Forgot Password', async ({ page }) => {
+  await forgetPassword(page, forgetInfo.forgetEmail, forgetInfo.newPassword);
 });

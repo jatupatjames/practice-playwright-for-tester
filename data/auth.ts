@@ -3,7 +3,9 @@ import { Client } from 'pg';
 
 export interface Login {
     jamesUsername : string,
-    jamesPassword : string
+    jamesPassword : string,
+    BenzUsername : string,
+    BenzPassword : string,
     }
 
 export interface ResetPassword {
@@ -14,6 +16,8 @@ export interface ResetPassword {
 export const loginInfo: Login = {
   jamesUsername: '0888614919',
   jamesPassword: 'P@ssw0rd',
+  BenzUsername: '0966614947',
+  BenzPassword: 'defJBenz4443',
 }
 
 export const forgetInfo: ResetPassword = {

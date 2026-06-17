@@ -11,8 +11,6 @@ export async function inputValue(locator, value) {
     await locator.fill(value);
   }
 
-  //Benz
-
 export async function scrollModal(page: Page) {
     // Locator ของ Modal ที่แสดงเนื้อหานโยบาย, Locator ของปุ่ม "รับทราบและยอมรับ", ดึงตำแหน่งและขนาดของ Modal
     const modal = page.locator('.ant-modal-body');

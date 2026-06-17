@@ -10,3 +10,5 @@ export async function selectCheckbox(page: Page, checkboxName: string) {
 export async function inputValue(locator, value) {
     await locator.fill(value);
   }
+
+  //Benz

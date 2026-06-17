@@ -12,4 +12,5 @@ test.skip('Login', async ({ page }) => {
 
 test('Forgot Password', async ({ page }) => {
   await forgetPassword(page, 'sarunyoochimmalee@gmail.com', 'ABC777');
+  //test pull request
 });

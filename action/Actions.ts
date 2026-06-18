@@ -43,3 +43,4 @@ export async function scrollModal(page: Page) {
         // รอให้ UI อัปเดตสถานะปุ่ม
         await page.waitForTimeout(100);
     }
+}

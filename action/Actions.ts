@@ -44,3 +44,16 @@ export async function scrollModal(page: Page) {
         await page.waitForTimeout(100);
     }
 }
+
+//ถ้ามีปุ่มชื่อเดียวกันหลายปุ่ม ฟังก์ชันนี้ใช้ไม่ได้
+export async function clickButton(page: Page, buttonName: string) {
+   await page.getByRole('button', { name: buttonName }).click();
+}
+
+export async function click(page: Page, locator: string) {
+    await page.locator(locator).click();
+ }
+
+export async function input(page: Page, locator: string, value: string) {
+    await page.locator(locator).fill(value);
+ }

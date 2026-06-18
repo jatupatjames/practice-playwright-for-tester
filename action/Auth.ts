@@ -1,8 +1,10 @@
 import { Page ,expect } from '@playwright/test';
 import { getOtpFromDb } from '../data/db';
+import { assertLoginPage } from './Assert';
 
 export async function login(page: Page, username: string, password: string) {
   await page.goto('https://runbike-event.web.app/login');
+  await assertLoginPage(page);
   await page.getByLabel('อีเมลหรือเบอร์โทรศัพท์').fill(username);
   await page.getByLabel('รหัสผ่าน').fill(password);
   await page.locator('button[type="submit"]', { hasText: 'เข้าสู่ระบบ' }).click();

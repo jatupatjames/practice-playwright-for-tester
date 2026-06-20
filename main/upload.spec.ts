@@ -1,6 +1,6 @@
 import { Page,test, expect } from "@playwright/test";
-import { locatorUploadAuthorizeFile } from "../data/Actions";
-import { loginInfo } from '../data/auth';
+import { locatorUploadAuthorizeFile } from "../locator/UploadImage";
+import { loginInfo } from '../data/Login';
 import { UploadAuthorizeFile } from "../action/Actions";
 
 test.beforeEach(async ({ page }) => {
@@ -10,7 +10,7 @@ test.beforeEach(async ({ page }) => {
     await page.locator('#password').fill(loginInfo.BenzPassword);
     await page.locator('button[type="submit"]').click();
     //register runbike
-    await page.getByRole("button",{ name:'ลงทะเบียนเลย'}).click();
+    await page.getByRole("button",{ name:'ลงทะเบียนเพิ่ม'}).click();
     await page.getByText('สมัครเข้าร่วมการแข่งขันนี้').click();
     //consent1
     await page.getByRole("button",{name:'อ่านนโยบายความเป็นส่วนตัว'}).click();
@@ -33,14 +33,14 @@ test.beforeEach(async ({ page }) => {
 })
 
 test('uploadFile', async ({ page }) => {
-    const fileUpload = 'data/ForUpload.jpeg'; 
+    const fileUpload = 'picture/ForUpload.jpeg'; 
 
     await UploadAuthorizeFile(page,fileUpload);
     await expect(page.locator(locatorUploadAuthorizeFile.deleteBth)).toBeVisible();
 });
 
 test('Delete file upload', async ({ page }) => {
-    const fileUpload = 'data/ForUpload.jpeg';
+    const fileUpload = 'picture/ForUpload.jpeg';
 
     await UploadAuthorizeFile(page, fileUpload);
     await expect(page.locator(locatorUploadAuthorizeFile.deleteBth)).toBeVisible();

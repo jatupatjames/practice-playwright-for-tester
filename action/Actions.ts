@@ -1,5 +1,5 @@
 import { Page ,expect } from '@playwright/test';
-import { locatorUploadAuthorizeFile } from '../data/Actions';
+import { locatorUploadAuthorizeFile } from '../locator/UploadImage';
 
 export async function selectCheckbox(page: Page, checkboxName: string) {
     const checkbox = page.locator(checkboxName);
@@ -17,6 +17,7 @@ export async function UploadAuthorizeFile(page: Page, fileUpload: string) {
     const file = page.locator(locatorUploadAuthorizeFile.UploadBtn).locator('input[type="file"]')
     await file.setInputFiles(fileUpload)
   }
+  
 export async function scrollModal(page: Page) {
     // Locator ของ Modal ที่แสดงเนื้อหานโยบาย, Locator ของปุ่ม "รับทราบและยอมรับ", ดึงตำแหน่งและขนาดของ Modal
     const modal = page.locator('.ant-modal-body');

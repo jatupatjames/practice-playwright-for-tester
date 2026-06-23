@@ -1,5 +1,6 @@
 import { test } from '@playwright/test';
 import { scrollModal } from '../action/Actions';
+import { verifyTermsAndConditionsPage } from '../action/Assert';
 
 test('Login Runbike', async ({ page }) => {
 
@@ -10,8 +11,11 @@ test('Login Runbike', async ({ page }) => {
     await page.locator('button[type="submit"]').click();
 
     // หลังจาก Login แล้วทำรายการต่อจนถึงส่วน Scroll Modal
-    await page.getByRole('button', { name: 'ลงทะเบียนเลย' }).click();
+    await page.getByRole('button', { name: 'ลงทะเบียนเพิ่ม' }).click();
     await page.getByText('สมัครเข้าร่วมการแข่งขันนี้').click();
+
+    // เรียกจากฟังก์ชันตรวจ Assert
+    await verifyTermsAndConditionsPage(page);
 
     // ส่วนของการกดนโยบายเพื่อให้แสดง Modal
     await page.getByRole('button', { name: 'อ่านนโยบายความเป็นส่วนตัว'}).click();

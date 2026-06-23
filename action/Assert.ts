@@ -135,3 +135,9 @@ export async function PrestepAssertGuardianInformation(page: Page) {
   await page.waitForTimeout(300);
   await page.getByRole('button', { name: 'ดำเนินการต่อ' }).click();
  }
+
+ //Assert ข้อตกลงและเงื่อนไข
+ export async function verifyTermsAndConditionsPage(page: Page) {
+
+    await expect(page.getByText('ข้อตกลงและเงื่อนไข (Terms and Conditions)')).toBeVisible();
+}

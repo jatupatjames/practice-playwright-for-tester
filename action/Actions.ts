@@ -1,5 +1,6 @@
 import { Page ,expect } from '@playwright/test';
 import { locatorUploadAuthorizeFile } from '../locator/UploadImage';
+import { button , Btn } from '../locator/Button';
 
 export async function selectCheckbox(page: Page, checkboxName: string) {
     const checkbox = page.locator(checkboxName);
@@ -49,9 +50,9 @@ export async function scrollModal(page: Page) {
 }
 
 //ถ้ามีปุ่มชื่อเดียวกันหลายปุ่ม ฟังก์ชันนี้ใช้ไม่ได้
-export async function clickButton(page: Page, buttonName: string) {
-   await page.getByRole('button', { name: buttonName }).click();
-}
+// export async function clickButton(page: Page, buttonName: string) {
+//    await page.getByRole('button', { name: buttonName }).click();
+// }
 
 export async function click(page: Page, locator: string) {
     await page.locator(locator).click();
@@ -60,3 +61,13 @@ export async function click(page: Page, locator: string) {
 export async function input(page: Page, locator: string, value: string) {
     await page.locator(locator).fill(value);
  }
+
+ //Click button
+ export async function clickButton(page: Page, buttonName: keyof button) {
+
+  const selector = Btn[buttonName]; 
+  // สั่งคลิกตาม Selector นั้น
+    await page.locator(selector).click(); // EX. เวลาเอาไปใช้ => await clickButton(page, 'SubmitLogin')
+ }
+
+ 

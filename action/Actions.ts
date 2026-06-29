@@ -60,3 +60,46 @@ export async function click(page: Page, locator: string) {
 export async function input(page: Page, locator: string, value: string) {
     await page.locator(locator).fill(value);
  }
+
+ 
+ //เลือกวันที่
+ export async function SelectDateFromDatePicker(
+  page: Page,
+  inputLocator: string,
+  dateValue: string
+) {
+  // รองรับ format: DD/MM/YYYY เช่น 15/08/1998
+  const [day, month, year] = dateValue.split('/');
+
+  const yyyy = year;
+  const mm = month.padStart(2, '0');
+  const dd = day.padStart(2, '0');
+
+  const calendarDateTitle = `${yyyy}-${mm}-${dd}`;
+
+  // เปิด DatePicker
+  await page.locator(inputLocator).click();
+
+  const datePickerDropdown = page.locator('.ant-picker-dropdown:not(.ant-picker-dropdown-hidden)');
+  await expect(datePickerDropdown).toBeVisible();
+
+  // กดปุ่มเลือกปี
+  await datePickerDropdown.locator('.ant-picker-year-btn').click();
+
+  // เลือกปี
+  await datePickerDropdown
+    .locator('.ant-picker-cell-inner', { hasText: yyyy })
+    .click();
+
+  // เลือกเดือน
+  // month index: Jan = 0, Feb = 1, ...
+  await datePickerDropdown
+    .locator('.ant-picker-month-panel .ant-picker-cell-inner')
+    .nth(Number(month) - 1)
+    .click();
+
+  // เลือกวันจาก title จริง เช่น 1998-08-15
+  await datePickerDropdown
+    .locator(`td[title="${calendarDateTitle}"] .ant-picker-cell-inner`)
+    .click();
+}

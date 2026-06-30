@@ -1,5 +1,6 @@
 import { Page ,expect } from '@playwright/test';
 import { locatorUploadAuthorizeFile } from '../locator/UploadImage';
+import { button , Btn } from '../locator/Button';
 
 export async function selectCheckbox(page: Page, checkboxName: string) {
     const checkbox = page.locator(checkboxName);
@@ -49,9 +50,9 @@ export async function scrollModal(page: Page) {
 }
 
 //ถ้ามีปุ่มชื่อเดียวกันหลายปุ่ม ฟังก์ชันนี้ใช้ไม่ได้
-export async function clickButton(page: Page, buttonName: string) {
-   await page.getByRole('button', { name: buttonName }).click();
-}
+// export async function clickButton(page: Page, buttonName: string) {
+//    await page.getByRole('button', { name: buttonName }).click();
+// }
 
 export async function click(page: Page, locator: string) {
     await page.locator(locator).click();
@@ -120,3 +121,55 @@ export async function selectDatePicker(page: Page, datePickerLocator: string, da
             }
         }
     }
+
+ //Click button
+ export async function clickButton(page: Page, buttonName: keyof button) {
+
+  const selector = Btn[buttonName]; 
+  // สั่งคลิกตาม Selector นั้น
+    await page.locator(selector).click(); // EX. เวลาเอาไปใช้ => await clickButton(page, 'SubmitLogin')
+ }
+
+ 
+ 
+ //เลือกวันที่
+ export async function SelectDateFromDatePicker(
+  page: Page,
+  inputLocator: string,
+  dateValue: string
+) {
+  // รองรับ format: DD/MM/YYYY เช่น 15/08/1998
+  const [day, month, year] = dateValue.split('/');
+
+  const yyyy = year;
+  const mm = month.padStart(2, '0');
+  const dd = day.padStart(2, '0');
+
+  const calendarDateTitle = `${yyyy}-${mm}-${dd}`;
+
+  // เปิด DatePicker
+  await page.locator(inputLocator).click();
+
+  const datePickerDropdown = page.locator('.ant-picker-dropdown:not(.ant-picker-dropdown-hidden)');
+  await expect(datePickerDropdown).toBeVisible();
+
+  // กดปุ่มเลือกปี
+  await datePickerDropdown.locator('.ant-picker-year-btn').click();
+
+  // เลือกปี
+  await datePickerDropdown
+    .locator('.ant-picker-cell-inner', { hasText: yyyy })
+    .click();
+
+  // เลือกเดือน
+  // month index: Jan = 0, Feb = 1, ...
+  await datePickerDropdown
+    .locator('.ant-picker-month-panel .ant-picker-cell-inner')
+    .nth(Number(month) - 1)
+    .click();
+
+  // เลือกวันจาก title จริง เช่น 1998-08-15
+  await datePickerDropdown
+    .locator(`td[title="${calendarDateTitle}"] .ant-picker-cell-inner`)
+    .click();
+}

@@ -5,6 +5,8 @@ export interface field {
     enLastName : string,
     nickname : string,
     country : string,
+    dateOfBirth : string
+    racerGpNo : string
     }
 
 export const racerInfo:field = {
@@ -14,5 +16,7 @@ export const racerInfo:field = {
     enLastName : '#racerList_0_lastnameEn',
     nickname : '#racerList_0_nickname',
     country : 'racerList_0_nationality',
+    dateOfBirth: '#racerList_0_dateOfBirth',
+    racerGpNo : '#racerList_0_racerGpNo'
 
 }

@@ -3,6 +3,8 @@ export interface Login {
     jamesPassword : string,
     BenzUsername : string,
     BenzPassword : string,
+    aingUsername : string,
+    aingPassword : string,
     }
 
 export const loginInfo: Login = {
@@ -10,6 +12,8 @@ export const loginInfo: Login = {
   jamesPassword: 'P@ssw0rd',
   BenzUsername: '0966614947',
   BenzPassword: 'defJBenz4443',
+  aingUsername: 'nuengruethai180444@gmail.com',
+  aingPassword: 'Test1234',
 }
 
 

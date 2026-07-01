@@ -32,3 +32,18 @@ export const racerJapan = {
     dateOfBirth: '01/06/2020'
 
 }
+
+
+export const racerKorea = {
+    thFirstName: 'ไบรอัน',
+    thLastName: 'คิม',
+    enFirstName: 'brian',
+    enLastName: 'Kim',
+    nickname: 'Brian',
+    country: 'เกาหลีใต้ (Korea)',
+    racerGpNo: 'KOR-001',
+    dateOfBirth: '20/08/2019'
+
+}
+
+

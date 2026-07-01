@@ -7,4 +7,11 @@ export const uploadFileData = {
     'picture',
     'passport.jpg'
   ),
+
+  idCardPdf: path.join(
+    process.cwd(),
+    'Runbike',
+    'picture',
+    'ID_Card_Example.pdf'
+  ),
 };

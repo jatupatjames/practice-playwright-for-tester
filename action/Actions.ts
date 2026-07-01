@@ -60,3 +60,26 @@ export async function click(page: Page, locator: string) {
 export async function input(page: Page, locator: string, value: string) {
     await page.locator(locator).fill(value);
  }
+
+ export async function payWithQRPromptPay(page: Page) {
+  // ดัก response ก่อน click
+  const chargeResponse = page.waitForResponse(
+    res => res.url().includes('beamcheckout.com') &&
+           res.url().includes('/charge') &&
+           res.request().method() === 'POST'
+  );
+
+  // คลิก QR PromptPay และรอ QR ขึ้น
+  await page.locator('.sc-hLBbgP').click();
+  await expect(page.getByText('ชำระเงินภายใน Invalid Date,')).toBeVisible();
+
+  // ดึง Force Charge URL จาก response
+  const response = await chargeResponse;
+  const body = await response.json();
+  const forceChargeUrl = body.encodedImage.rawData;
+
+  // จำลองการสแกน QR
+  await page.goto(forceChargeUrl);
+  await page.locator('button[value="SUCCEEDED"]').click();
+  await page.getByRole('button', { name: 'Return to merchant' }).click();
+}

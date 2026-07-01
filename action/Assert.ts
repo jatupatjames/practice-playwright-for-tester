@@ -119,14 +119,14 @@ export async function PrestepAssertGuardianInformation(page: Page) {
   await page.getByRole('textbox', { name: '* นามสกุล ภาษาอังกฤษ (English' }).fill('Palmer');
   await page.getByRole('textbox', { name: 'ชื่อเล่น (Nickname)' }).click();
   await page.getByRole('textbox', { name: 'ชื่อเล่น (Nickname)' }).fill('หนาว');
-  await page.getByText('ชาย (Boy)').click();
-  await page.getByRole('textbox', { name: '* วันเดือนปีเกิด (Date of' }).click();
+  await page.locator('#racerList_0_gender').getByText('ชาย (Boy)').click();
+  await page.locator('#racerList_0_dateOfBirth').click();
   await page.getByRole('button', { name: 'Choose a year' }).click();
   await page.getByText('2020', { exact: true }).click();
   await page.getByText('Jan').click();
   await page.getByText('16').click();
   await selectCheckbox(page, checkboxName.AnnualMember);
-  await page.getByText('Sรอบอก 27" / ตัวยาว 18 (Width').click();
+  await page.locator('#racerList_0_shirtSize').getByText('Sรอบอก 27" / ตัวยาว 18 (Width').click();
   await page.getByRole('button', { name: 'สถานที่ 1 เสาร์ (Sat)' }).click();
   await page.locator('div').filter({ hasText: /^คลิกเพื่อเลือกรุ่นการแข่งขันหลัก\.\.\.$/ }).nth(1).click();
   await page.getByText('รุ่นอายุ 6 ปี "B" (6.1-6.6').click();

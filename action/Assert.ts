@@ -2,6 +2,7 @@ import { Page ,expect } from '@playwright/test';
 import { login } from '../data/Assert';
 import { selectCheckbox } from '../action/Actions';
 import { checkboxName } from '../data/Actions';
+import { racer } from '../data/RacerInfo';
 
 
 export async function assertLoginPage(page: Page) {
@@ -137,7 +138,20 @@ export async function PrestepAssertGuardianInformation(page: Page) {
  }
 
  //Assert ข้อตกลงและเงื่อนไข
- export async function verifyTermsAndConditionsPage(page: Page) {
+export async function verifyTermsAndConditionsPage(page: Page) {
 
     await expect(page.getByText('ข้อตกลงและเงื่อนไข (Terms and Conditions)')).toBeVisible();
+}
+
+export async function assertRegistrationSummaryPage(page: Page) {
+  await expect(page.getByRole('heading', { name: /สรุปยอดการลงทะเบียน \(Registration Summary\)/ })).toBeVisible();
+  await expect(page.getByText('Check your details before making payment.')).toBeVisible();
+  await expect(page.getByText(`${racer.thFirstName} ${racer.thLastName}`)).toBeVisible();
+  await expect(page.getByText(racer.nickname)).toBeVisible();
+  await expect(page.getByText(racer.category.replace(' - 1,200 ฿', ''))).toBeVisible();
+  await expect(page.getByPlaceholder('กรอกโค้ดส่วนลด (Apply Coupon / Promo Code)')).toBeVisible();
+  await expect(page.getByText('ยอดรวม')).toBeVisible();
+  await expect(page.getByText('ยอดสุทธิ')).toBeVisible();
+  await expect(page.getByText('1,200 ฿')).toHaveCount(5);
+  await expect(page.getByRole('button', { name: 'ไปหน้าชำระเงิน' })).toBeVisible();
 }

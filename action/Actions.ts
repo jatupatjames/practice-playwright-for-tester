@@ -1,6 +1,9 @@
 import { Page ,expect } from '@playwright/test';
 import { locatorUploadAuthorizeFile } from '../locator/UploadImage';
 import { button , Btn } from '../locator/Button';
+import { cardInfo } from '../locator/Mastercard';
+import { masterCard } from '../data/Mastercard';
+import { racerInfo } from '../locator/RacerInfo';
 
 export async function selectCheckbox(page: Page, checkboxName: string) {
     const checkbox = page.locator(checkboxName);
@@ -107,13 +110,14 @@ export async function selectDatePicker(page: Page, datePickerLocator: string, da
     export async function selectDropdown(page: Page, dropdownLocator: string, optionName: string) {
         await page.locator(dropdownLocator).click();
 
-        const option = page.locator(`.ant-select-item-option:has-text("${optionName}")`);
+        const option = page.locator('.ant-select-dropdown:not(.ant-select-dropdown-hidden)')
+            .locator('.ant-select-item-option', { hasText: optionName });
         const maxRetries = 10;
         for (let i = 0; i < maxRetries; i++) {
             const isFound = await option.count() > 0;
             console.log(`isFound: ${isFound}, attempt: ${i + 1}`);
             if (isFound) {
-                await option.first().click();
+                await option.first().evaluate((element: HTMLElement) => element.click());
                 break;
             } else {
                 await page.mouse.wheel(0, 100);
@@ -130,8 +134,6 @@ export async function selectDatePicker(page: Page, datePickerLocator: string, da
     await page.locator(selector).click(); // EX. เวลาเอาไปใช้ => await clickButton(page, 'SubmitLogin')
  }
 
- 
- 
  //เลือกวันที่
  export async function SelectDateFromDatePicker(
   page: Page,
@@ -172,4 +174,37 @@ export async function selectDatePicker(page: Page, datePickerLocator: string, da
   await datePickerDropdown
     .locator(`td[title="${calendarDateTitle}"] .ant-picker-cell-inner`)
     .click();
+}
+
+export async function selectShirtSize(page: Page,size: string) {
+
+    await page.locator(racerInfo.racerShirtSize).getByText(size, { exact: true }).click();
+}
+
+export async function selectRaceDate(page: Page, raceDate: '27' | '28') {
+    const raceDateName = {
+        '27': 'สถานที่ 1 เสาร์ (Sat) 27',
+        '28': 'สถานที่ 2 อาทิตย์ (Sun) 28',
+    };
+
+    const raceDateButton = page.getByRole('button', { name: raceDateName[raceDate] });
+    await raceDateButton.click();
+}
+//ชำระเงินด้วยบัตรเครดิต
+export async function payByCreditCard(page: Page) {
+  await page
+    .locator(cardInfo.goToPaymentButton)
+    .click({ force: true });
+
+  await page.waitForURL(/beamcheckout\.com/, { timeout: 30000 });
+  await page.waitForLoadState('domcontentloaded');
+
+  await page.waitForTimeout(2000);
+
+  await page.locator(cardInfo.visibleInput).nth(0).fill(masterCard.accountID);
+  await page.locator(cardInfo.visibleInput).nth(1).fill(masterCard.expiryDate);
+  await page.locator(cardInfo.visibleInput).nth(2).fill(masterCard.CVC);
+  await page.locator(cardInfo.visibleInput).nth(3).fill(masterCard.nameAccount);
+
+  await page.getByRole('button', { name: cardInfo.payButtonName }).click();
 }

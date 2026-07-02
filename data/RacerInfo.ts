@@ -6,18 +6,22 @@ export interface RacerInfo {
     nickname : string,
     country : string,
     racerGpNo : string,
-    dateOfBirth : string
+    dateOfBirth : string,
+    shirtSize : string,
+    category : string
 }
 
-export const racer:RacerInfo = {
+export const racer: RacerInfo= {
 thFirstName: 'จตุภัทร',
 thLastName: 'จิระประไพ',
 enFirstName : 'Jatupat',
 enLastName : 'Jirapraphai',
 nickname : 'James',
-country : 'Thailand',
+country : 'ไทย',
 racerGpNo : '',
-dateOfBirth: ''
+dateOfBirth: '20/05/2020',
+shirtSize: 'M',
+category: 'รุ่นอายุ 5 ปี "A" (5.7-6.0 Years Old) - 1,200 ฿'
 
 }
 
@@ -32,3 +36,18 @@ export const racerJapan = {
     dateOfBirth: '01/06/2020'
 
 }
+
+
+export const racerKorea = {
+    thFirstName: 'ไบรอัน',
+    thLastName: 'คิม',
+    enFirstName: 'brian',
+    enLastName: 'Kim',
+    nickname: 'Brian',
+    country: 'เกาหลีใต้ (Korea)',
+    racerGpNo: 'KOR-001',
+    dateOfBirth: '20/08/2019'
+
+}
+
+

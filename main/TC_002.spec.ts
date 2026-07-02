@@ -75,7 +75,7 @@ test('TC_002', async ({ page }) => {
 
     //กรอกข้อมูลบัตรเครดิต
 
-   await payByCreditCard(page, masterCardData );
+    await payByCreditCard(page, masterCardData);
     await page.pause();
 
 

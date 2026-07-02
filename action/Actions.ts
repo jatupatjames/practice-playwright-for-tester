@@ -1,6 +1,8 @@
 import { Page ,expect } from '@playwright/test';
 import { locatorUploadAuthorizeFile } from '../locator/UploadImage';
 import { button , Btn } from '../locator/Button';
+import { cardInfo } from '../locator/Mastercard';
+import { masterCard } from '../data/Mastercard';
 import { racerInfo } from '../locator/RacerInfo';
 
 export async function selectCheckbox(page: Page, checkboxName: string) {
@@ -187,4 +189,22 @@ export async function selectRaceDate(page: Page, raceDate: '27' | '28') {
 
     const raceDateButton = page.getByRole('button', { name: raceDateName[raceDate] });
     await raceDateButton.click();
+}
+//ชำระเงินด้วยบัตรเครดิต
+export async function payByCreditCard(page: Page) {
+  await page
+    .locator(cardInfo.goToPaymentButton)
+    .click({ force: true });
+
+  await page.waitForURL(/beamcheckout\.com/, { timeout: 30000 });
+  await page.waitForLoadState('domcontentloaded');
+
+  await page.waitForTimeout(2000);
+
+  await page.locator(cardInfo.visibleInput).nth(0).fill(masterCard.accountID);
+  await page.locator(cardInfo.visibleInput).nth(1).fill(masterCard.expiryDate);
+  await page.locator(cardInfo.visibleInput).nth(2).fill(masterCard.CVC);
+  await page.locator(cardInfo.visibleInput).nth(3).fill(masterCard.nameAccount);
+
+  await page.getByRole('button', { name: cardInfo.payButtonName }).click();
 }

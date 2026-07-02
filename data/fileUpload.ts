@@ -1,17 +1,9 @@
 import path from 'path';
 
-export const uploadFileData = {
-  authorizeFile: path.join(
-    process.cwd(),
-    'Runbike',
-    'picture',
-    'passport.jpg'
-  ),
+const picturePath = (...fileName: string[]) => path.join(process.cwd(), 'picture', ...fileName);
 
-  idCardPdf: path.join(
-    process.cwd(),
-    'Runbike',
-    'picture',
-    'ID_Card_Example.pdf'
-  ),
+export const uploadFileData = {
+  passport: picturePath('passport.jpg'),
+  idcat: picturePath('idcat.png'),
+  forUpload: picturePath('ForUpload.jpeg'),
 };

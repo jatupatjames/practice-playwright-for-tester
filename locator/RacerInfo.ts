@@ -9,7 +9,10 @@ export interface field {
     racerGpNo : string
     RaceDateOption: string
     RaceTypeDropdown: string
-    RaceTypeOption: string
+    RaceTypeOption: string,
+    racerShirtSize : string,
+    category : string,
+    nextButton : string,
     gdFirstName : string,
     gdAddress : string,
     gdEmail : string,
@@ -28,7 +31,6 @@ export const racerInfo:field = {
     gdFirstName : '#parentFullname',
     gdAddress : '#parentAddress',
     gdEmail : '#parentEmail',
-    gdPhone : '#parentMobileNo',
     RaceDateOption: 'button:has-text("สถานที่")',
     RaceTypeDropdown: '.ant-select:not(.ant-select-disabled)',
     RaceTypeOption: '.ant-select-dropdown:visible span.ant-typography',

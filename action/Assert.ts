@@ -156,3 +156,13 @@ export async function assertRegistrationSummaryPage(page: Page) {
   await expect(page.getByLabel('ออกใบกำกับภาษี (Tax Invoice)')).toBeVisible();
   await expect(page.getByRole('button', { name: 'ดำเนินการต่อ' })).toBeVisible();
 }
+
+//toey
+export async function clickReadAllRules(page: Page) {
+  await expect(page.locator('#ruleAccept')).toBeDisabled();
+
+  await page.getByRole('button', { name: 'อ่านกฎกติกาทั้งหมด' }).click();
+
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await expect(page.getByText('กฎกติกาการแข่งขัน')).toBeVisible();
+}

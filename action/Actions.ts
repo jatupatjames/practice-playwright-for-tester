@@ -208,3 +208,27 @@ export async function payByCreditCard(page: Page) {
 
   await page.getByRole('button', { name: cardInfo.payButtonName }).click();
 }
+
+
+//toey
+export async function selectNationality(page: Page, optionText: string) {
+  await page.locator('#racerList_0_nationality')
+    .locator('xpath=ancestor::div[contains(@class,"ant-select")]')
+    .locator('.ant-select-selector')
+    .click();
+
+  await expect(page.locator('.ant-select-dropdown:not(.ant-select-dropdown-hidden)')).toBeVisible();
+
+  await page
+    .locator('.ant-select-dropdown:not(.ant-select-dropdown-hidden)')
+    .locator('.ant-select-item-option')
+    .filter({ hasText: optionText })
+    .click();
+
+  await expect(
+    page
+      .locator('#racerList_0_nationality')
+      .locator('xpath=ancestor::div[contains(@class,"ant-select")]')
+      .locator('.ant-select-selection-item')
+  ).toHaveText(optionText);
+}

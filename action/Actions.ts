@@ -12,9 +12,6 @@ export async function selectCheckbox(page: Page, checkboxName: string) {
     
 }
 
-// export async function inputValue(locator, value) {
-//     await locator.fill(value);
-//   }
 
 //upload
 export async function UploadAuthorizeFile(page: Page, fileUpload: string) {
@@ -231,4 +228,57 @@ export async function selectNationality(page: Page, optionText: string) {
       .locator('xpath=ancestor::div[contains(@class,"ant-select")]')
       .locator('.ant-select-selection-item')
   ).toHaveText(optionText);
+}
+
+export async function selectDate(page: Page, racerIndex: number, date: string) {
+  const [day, month, year] = date.split('/');
+
+  const monthMap: Record<string, string> = {
+    '01': 'Jan','02':'Feb','03':'Mar','04':'Apr','05':'May','06':'Jun',
+    '07':'Jul','08':'Aug','09':'Sep','10':'Oct','11':'Nov','12':'Dec'
+  };
+
+  const dobInput = page.locator(`#racerList_${racerIndex}_dateOfBirth`);
+  await dobInput.click();
+
+  // ALWAYS single active picker
+  const getPicker = () => page.locator('.ant-picker-dropdown:visible').first();
+
+  const picker = getPicker();
+  await expect(picker).toBeVisible();
+
+  // YEAR
+  await picker.getByRole('button', { name: /choose a year/i }).click();
+
+  const yearCell = page.locator('.ant-picker-dropdown:visible')
+    .getByText(year, { exact: true });
+
+  for (let i = 0; i < 20; i++) {
+    if (await yearCell.isVisible().catch(() => false)) break;
+
+    await page.getByRole('button', { name: /last year/i }).click();
+    await page.waitForTimeout(150);
+  }
+
+  await expect(yearCell).toBeVisible({ timeout: 10000 });
+  await yearCell.click();
+
+  // MONTH
+  const pickerAfterYear = getPicker();
+  await expect(pickerAfterYear.getByText(monthMap[month], { exact: true }))
+    .toBeVisible();
+
+  await pickerAfterYear.getByText(monthMap[month], { exact: true }).click();
+
+  // DAY
+  const pickerAfterMonth = getPicker();
+
+  const dayNum = parseInt(day, 10).toString(); // strip leading zero: "01" → "1"
+  const dayCell = pickerAfterMonth
+    .locator('.ant-picker-cell-inner')
+    .filter({ hasText: new RegExp(`^${dayNum}$`) })
+    .first();
+
+  await expect(dayCell).toBeVisible({ timeout: 10000 });
+  await dayCell.click();
 }

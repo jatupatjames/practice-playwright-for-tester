@@ -5,6 +5,8 @@ export interface Login {
     BenzPassword : string,
     aingUsername : string,
     aingPassword : string,
+    ployUsername : string,
+    ployPassword : string
     }
 
 export const loginInfo: Login = {
@@ -14,6 +16,8 @@ export const loginInfo: Login = {
   BenzPassword: 'defJBenz4443',
   aingUsername: 'nuengruethai180444@gmail.com',
   aingPassword: 'Test1234',
+  ployUsername: '0933199971',
+  ployPassword: 'P@ssw0rd'
 }
 
 

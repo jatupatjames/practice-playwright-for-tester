@@ -10,4 +10,3 @@ AnnualMember: '#racerList_0_annualMember'
 }
 
 //Ann test 
-

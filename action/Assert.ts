@@ -155,3 +155,13 @@ export async function assertRegistrationSummaryPage(page: Page) {
   await expect(page.getByText('1,200 ฿')).toHaveCount(5);
   await expect(page.getByRole('button', { name: 'ไปหน้าชำระเงิน' })).toBeVisible();
 }
+
+//toey
+export async function clickReadAllRules(page: Page) {
+  await expect(page.locator('#ruleAccept')).toBeDisabled();
+
+  await page.getByRole('button', { name: 'อ่านกฎกติกาทั้งหมด' }).click();
+
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await expect(page.getByText('กฎกติกาการแข่งขัน')).toBeVisible();
+}

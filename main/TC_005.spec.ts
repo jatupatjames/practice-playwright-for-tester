@@ -11,6 +11,9 @@ import { uploadFileData } from '../data/fileUpload';
 import { parent } from '../data/Parent';
 import { parentInfo } from '../locator/Parent';
 import { assertRegistrationSummaryPage } from '../action/Assert';
+import { summary } from '../locator/Summary'; 
+import { payment } from '../locator/Payment';
+import { cardInfo } from '../data/Payment';
 
 test('Function Checkbox', async ({ page }) => {
   await login(page, loginInfo.jamesUsername, loginInfo.jamesPassword);
@@ -56,7 +59,17 @@ test('Function Checkbox', async ({ page }) => {
   await input(page, parentInfo.email, parent.email);
   await input(page, parentInfo.mobile, parent.mobile);
   await click(page, parentInfo.nextButton);
+  
+  //Summary Page
   await assertRegistrationSummaryPage(page);
+  await click(page, summary.proceedToPayment);
+
+  //Payment Page
+  // await input(page, payment.cardNo, cardInfo.cardNo);
+  // await input(page, payment.expDate, cardInfo.expDate);
+  // await input(page, payment.cvv, cardInfo.cvv);
+  // await input(page, payment.nameOnCard, cardInfo.nameOnCard);
+  // await click(page, payment.paymentButton);
 
   await page.pause();
   

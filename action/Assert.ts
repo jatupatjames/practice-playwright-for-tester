@@ -153,6 +153,5 @@ export async function assertRegistrationSummaryPage(page: Page) {
   await expect(page.getByText('ยอดรวม')).toBeVisible();
   await expect(page.getByText('ยอดสุทธิ')).toBeVisible();
   await expect(page.getByText('1,200 ฿')).toHaveCount(5);
-  await expect(page.getByLabel('ออกใบกำกับภาษี (Tax Invoice)')).toBeVisible();
-  await expect(page.getByRole('button', { name: 'ดำเนินการต่อ' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'ไปหน้าชำระเงิน' })).toBeVisible();
 }

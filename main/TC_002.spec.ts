@@ -1,7 +1,7 @@
 import { test } from '@playwright/test';
 import { click, input, payByCreditCard, scrollModal, SelectDateFromDatePicker, UploadAuthorizeFile } from '../action/Actions';
-import { loginInfo } from '../data/Login';
-import { login } from '../action/auth';
+import { loginInfo } from '../data/login';
+import { login } from '../action/Auth.ts';
 import { history } from '../locator/History';
 import { TermAndCon } from '../locator/TermAndCon';
 import { racerJapan } from '../data/RacerInfo';
@@ -48,7 +48,7 @@ test('TC_002', async ({ page }) => {
    //เลือกไซส์เสื้อ
     await page.getByText('L', { exact: true }).click();
    //อัพโหลดไฟล์เอกสารการอนุญาต
-    await UploadAuthorizeFile(page, uploadFileData.authorizeFile);
+    await UploadAuthorizeFile(page, uploadFileData.idcat);
 
   // เลือกสถานที่แข่ง
     const raceDateOption = page.locator(racerInfo.RaceDateOption).first();

@@ -2,7 +2,7 @@ import { Page ,expect } from '@playwright/test';
 import { locatorUploadAuthorizeFile } from '../locator/UploadImage';
 import { button , Btn } from '../locator/Button';
 import { cardInfo } from '../locator/Mastercard';
-import { masterCard } from '../data/Mastercard';
+import { MasterCardData } from '../data/Mastercard';
 import { racerInfo } from '../locator/RacerInfo';
 
 export async function selectCheckbox(page: Page, checkboxName: string) {
@@ -191,7 +191,7 @@ export async function selectRaceDate(page: Page, raceDate: '27' | '28') {
     await raceDateButton.click();
 }
 //ชำระเงินด้วยบัตรเครดิต
-export async function payByCreditCard(page: Page) {
+export async function payByCreditCard(page: Page, card: MasterCardData) {
   await page
     .locator(cardInfo.goToPaymentButton)
     .click({ force: true });
@@ -201,10 +201,12 @@ export async function payByCreditCard(page: Page) {
 
   await page.waitForTimeout(2000);
 
-  await page.locator(cardInfo.visibleInput).nth(0).fill(masterCard.accountID);
-  await page.locator(cardInfo.visibleInput).nth(1).fill(masterCard.expiryDate);
-  await page.locator(cardInfo.visibleInput).nth(2).fill(masterCard.CVC);
-  await page.locator(cardInfo.visibleInput).nth(3).fill(masterCard.nameAccount);
+  const cardInput = page.locator(cardInfo.visibleInput);
+
+  await cardInput.nth(0).fill(card.accountID);
+  await cardInput.nth(1).fill(card.expiryDate);
+  await cardInput.nth(2).fill(card.CVC);
+  await cardInput.nth(3).fill(card.nameAccount);
 
   await page.getByRole('button', { name: cardInfo.payButtonName }).click();
 }

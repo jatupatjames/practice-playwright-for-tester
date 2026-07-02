@@ -1,7 +1,7 @@
 import { test } from '@playwright/test';
 import { click, input, payByCreditCard, scrollModal, SelectDateFromDatePicker, UploadAuthorizeFile } from '../action/Actions';
-import { loginInfo } from '../data/login';
-import { login } from '../action/Auth.ts';
+import { loginInfo } from '../data/Login.ts';
+import { login } from '../action/auth';
 import { history } from '../locator/History';
 import { TermAndCon } from '../locator/TermAndCon';
 import { racerJapan } from '../data/RacerInfo';
@@ -10,6 +10,7 @@ import { uploadFileData } from '../data/fileUpload';
 import { Btn } from '../locator/Button';
 import { expect } from '@playwright/test';
 import { guardian } from '../data/Guardian';
+import { masterCardData } from '../data/Mastercard.ts';
 
 test('TC_002', async ({ page }) => {
 
@@ -74,7 +75,7 @@ test('TC_002', async ({ page }) => {
 
     //กรอกข้อมูลบัตรเครดิต
 
-    await payByCreditCard(page);
+   await payByCreditCard(page, masterCardData );
     await page.pause();
 
 

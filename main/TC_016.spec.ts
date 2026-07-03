@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { selectCheckbox , scrollModal,click,input,payWithQRPromptPay} from '../action/Actions';
+import { selectCheckbox , scrollModal,click,input,payWithQRPromptPay,fillTaxInvoice} from '../action/Actions';
 import { checkboxName } from '../data/Actions';
 import { login } from '../action/auth';
 import { loginInfo } from '../data/login';
@@ -10,7 +10,7 @@ import { racer } from '../data/RacerInfo';
 import { assertGuardianInformation } from '../action/Assert';
 
 
-test('TC_009', async ({ page }) => {
+test('TC_016', async ({ page }) => {
   await login(page, '0910123120', 'ABC777');
   await click(page, history.addRacer);
   await click(page, history.registerRacer);
@@ -53,26 +53,23 @@ test('TC_009', async ({ page }) => {
   await page.getByRole('button', { name: 'ดำเนินการต่อ' }).click();
   await expect(page.getByRole('heading', { name: 'สรุปยอดการลงทะเบียน (' })).toBeVisible();
   await page.getByRole('textbox', { name: 'กรอกโค้ดส่วนลด (Apply Coupon' }).click();
-  await page.getByRole('textbox', { name: 'กรอกโค้ดส่วนลด (Apply Coupon' }).fill('RB26FBCE73');
+  await page.getByRole('textbox', { name: 'กรอกโค้ดส่วนลด (Apply Coupon' }).fill('RB26F78980');
   await page.getByRole('button', { name: 'ใช้' }).click();
   await expect(page.getByText('ลดไป 120 ฿')).toBeVisible();
-  await page.getByRole('button', { name: 'ออกใบกำกับภาษี (Tax Invoice' }).click();
-  await page.getByLabel('', { exact: true }).check();
-  await page.getByRole('textbox', { name: '* เลขประจำตัวผู้เสียภาษี (Tax' }).click();
-  await page.getByRole('textbox', { name: '* เลขประจำตัวผู้เสียภาษี (Tax' }).fill('1326984503216');
-  await page.getByRole('textbox', { name: '* ชื่อ-นามสกุล หรือชื่อบริษัท (Full Name / Company Name)' }).click();
-  await page.getByRole('textbox', { name: '* ชื่อ-นามสกุล หรือชื่อบริษัท (Full Name / Company Name)' }).fill('targaryen house');
-  await page.getByRole('textbox', { name: '* ที่อยู่ (Tax Address)' }).click();
-  await page.getByRole('textbox', { name: '* ที่อยู่ (Tax Address)' }).fill('dragon stone');
-  await page.getByRole('textbox', { name: '* อีเมล (Email)' }).click();
-  await page.getByRole('textbox', { name: '* อีเมล (Email)' }).fill('targaryen@gmail.com');
-  await page.getByRole('combobox', { name: '* รหัสไปรษณีย์ (Zip Code)' }).click();
-  await page.getByRole('combobox', { name: '* รหัสไปรษณีย์ (Zip Code)' }).fill('55000');
-  await page.getByText('เมืองจัง » ภูเพียง » น่าน »').click();
-  await expect(page.locator('div').filter({ hasText: /^เมืองจัง$/ }).nth(3)).toBeVisible();
-  await expect(page.locator('div').filter({ hasText: /^ภูเพียง$/ }).nth(3)).toBeVisible();
-  await expect(page.locator('div').filter({ hasText: /^น่าน$/ }).nth(3)).toBeVisible();
+  await fillTaxInvoice(page, {
+  taxId: '1326984503216',
+  fullName: 'targaryen house',
+  address: 'dragon stone',
+  email: 'targaryen@gmail.com',
+  zipCode: '55000',
+  zipCodeOption: 'เมืองจัง » ภูเพียง » น่าน »',
+  subDistrict: 'เมืองจัง',
+  district: 'ภูเพียง',
+  province: 'น่าน',
+});
   await page.getByRole('button', { name: 'ไปหน้าชำระเงิน' }).click();
+  await page.waitForLoadState('networkidle'); // รอหน้าโหลดเสร็จก่อน
+  await expect(page.getByText('โอนเงิน ผ่านธนาคาร')).toBeVisible();
   await page.getByText('โอนเงิน ผ่านธนาคาร').click();
   await expect(page.getByText('QR พร้อมเพย์')).toBeVisible();
   await payWithQRPromptPay(page);

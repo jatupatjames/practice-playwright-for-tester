@@ -83,3 +83,33 @@ export async function input(page: Page, locator: string, value: string) {
   await page.locator('button[value="SUCCEEDED"]').click();
   await page.getByRole('button', { name: 'Return to merchant' }).click();
 }
+
+export interface TaxInvoiceInfo {
+  taxId: string;
+  fullName: string;
+  address: string;
+  email: string;
+  zipCode: string;
+  zipCodeOption: string;
+  subDistrict: string;  // เมืองจัง
+  district: string;     // ภูเพียง
+  province: string;     // น่าน
+}
+
+export async function fillTaxInvoice(page: Page, info: TaxInvoiceInfo) {
+  await page.getByRole('button', { name: 'ออกใบกำกับภาษี (Tax Invoice' }).click();
+  await page.getByLabel('', { exact: true }).check();
+
+  await page.getByRole('textbox', { name: '* เลขประจำตัวผู้เสียภาษี (Tax' }).fill(info.taxId);
+  await page.getByRole('textbox', { name: '* ชื่อ-นามสกุล หรือชื่อบริษัท (Full Name / Company Name)' }).fill(info.fullName);
+  await page.getByRole('textbox', { name: '* ที่อยู่ (Tax Address)' }).fill(info.address);
+  await page.getByRole('textbox', { name: '* อีเมล (Email)' }).fill(info.email);
+  // ... fill ต่างๆ ...
+
+  await page.getByRole('combobox', { name: '* รหัสไปรษณีย์ (Zip Code)' }).fill(info.zipCode);
+  await page.getByText(info.zipCodeOption).click();
+
+  await expect(page.locator('div').filter({ hasText: new RegExp(`^${info.subDistrict}$`) }).nth(3)).toBeVisible();
+  await expect(page.locator('div').filter({ hasText: new RegExp(`^${info.district}$`) }).nth(3)).toBeVisible();
+  await expect(page.locator('div').filter({ hasText: new RegExp(`^${info.province}$`) }).nth(3)).toBeVisible();
+}

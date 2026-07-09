@@ -45,6 +45,9 @@ ActiveSelectDropdown : string // dropdown options ที่กำลังเป
 RaceDateOption: string
 NextStep: string
 NextStepToPayment: string
+BankTransfer: string
+QRPromptPay: string
+Pay1800: string
 }
 
 export const Btn:button={
@@ -94,4 +97,7 @@ ActiveSelectDropdown : '.ant-select-dropdown:not(.ant-select-dropdown-hidden)',
 RaceDateOption: 'button:has-text("สถานที่")',
 NextStep : 'button:has-text("ดำเนินการต่อ")',
 NextStepToPayment : 'button:has-text("ไปหน้าชำระเงิน")',
+BankTransfer: 'text="โอนเงิน ผ่านธนาคาร"',
+QRPromptPay: 'text="QR พร้อมเพย์"',
+Pay1800: 'button:has-text("ชำระเงิน 1,800.00 บาท")',
 }

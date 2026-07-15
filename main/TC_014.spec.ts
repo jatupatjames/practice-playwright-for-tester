@@ -1,10 +1,9 @@
 import { test, expect } from "@playwright/test";
 import { loginInfo } from '../data/Login';
-import { checkboxName } from '../data/Actions';
 import { locatorUploadAuthorizeFile } from "../locator/UploadImage";
 import { Btn } from "../locator/Button";
 import {
-  clickButton,scrollModal,input,selectDatePicker,UploadAuthorizeFile,selectCheckbox,selectDropdown} from "../action/Actions";
+  clickButton,scrollModal,input,selectDatePicker,UploadAuthorizeFile,selectDropdown} from "../action/Actions";
 
 test.beforeEach(async ({ page }) => {
   await page.goto('https://runbike-event.web.app/login');
@@ -47,7 +46,7 @@ test('TC_014', async ({ page }) => {
   await expect(page.locator(locatorUploadAuthorizeFile.deleteBth)).toBeVisible();
 
   // เลือกวันแข่ง
-  await clickButton(page, 'RaceDateSunday');
+  await clickButton(page, 'RaceDateSaturday');
 
   // เลือกรุ่นหลัก
   await selectDropdown(
@@ -56,7 +55,7 @@ test('TC_014', async ({ page }) => {
     'รุ่นอายุ 8.1-10.0 ปี'
   );
 
-  // เลือกรุ่นเสริม
+  // เลือกรุ่นเสริม 1 รุ่น
   await page.locator(Btn.ExtraCategoryDropdown).click();
   await page
     .locator(Btn.ActiveSelectDropdown)
@@ -73,4 +72,77 @@ test('TC_014', async ({ page }) => {
   await page.getByTitle('เบอร์โทรศัพท์').fill('0900000000');
 
   await clickButton(page, 'Continue');
+
+  // Step 1: ตรวจยอดในหน้า Summary ก่อนเข้าสู่ Payment
+  await expect(page.getByText(/ยอดรวม\s*1,800\s*฿/).first()).toBeVisible();
+  await expect(page.getByText(/ยอดสุทธิ\s*1,800\s*฿/).first()).toBeVisible();
+
+  // Step 2: ไปหน้า Beam payment และเลือกจ่ายแบบ QR PromptPay
+  await clickButton(page, 'NextStepToPayment');
+  await page.waitForURL(/playground-pay/);
+  await clickButton(page, 'BankTransfer');
+  await clickButton(page, 'QRPromptPay');
+  await expect(page.locator(Btn.Pay1800)).toBeEnabled();
+
+  // Step 3: เตรียมดัก chargeId ของรายการจ่ายเงินรอบนี้จาก network response
+  // ต้องใช้ chargeId ของรอบปัจจุบัน เพราะ Beam สร้าง id ใหม่ทุกครั้งที่กดชำระเงิน
+  const chargeIds = new Set<string>();
+
+  page.on('response', async (response) => {
+    const url = response.url();
+    if (!url.includes('sandbox-gateway') && !url.includes('beamcheckout')) return;
+
+    const chargeIdFromUrl = url.match(/c_[A-Za-z0-9]+/)?.[0];
+    if (chargeIdFromUrl) {
+      chargeIds.add(chargeIdFromUrl);
+      return;
+    }
+
+    try {
+      const responseBody = await response.text();
+      const chargeIdFromBody = responseBody.match(/c_[A-Za-z0-9]+/)?.[0];
+      if (chargeIdFromBody) chargeIds.add(chargeIdFromBody);
+    } catch {
+      // บาง response ของ third-party อ่าน body ไม่ได้ ให้ข้ามไปเพื่อรอ response อื่น
+    }
+  });
+
+  // Step 4: กดปุ่มชำระเงิน เพื่อให้ Beam สร้าง QR และ chargeId
+  await clickButton(page, 'Pay1800');
+
+  // Step 5: ยืนยันว่า QR PromptPay แสดงถูกต้อง พร้อมยอด 1,800 บาท
+  await expect(page.getByAltText('QR_PROMPT_PAY')).toBeVisible({ timeout: 30000 });
+  await expect(page.getByText(/1,800\.00\s*บาท/).first()).toBeVisible();
+  await page.waitForTimeout(1000);
+
+  const chargeId = [...chargeIds].at(-1);
+  if (!chargeId) {
+    throw new Error('Charge ID not found from payment network response');
+  }
+
+  // Step 6: เปิดหน้า sandbox force ของ charge นี้ แล้วกด Mark as Succeeded
+  // วิธีนี้จำลองการกดจากหน้า /charges/{chargeId}/force ที่ sandbox เตรียมไว้ให้
+  const forcePage = await page.context().newPage();
+  await forcePage.goto(`https://sandbox-gateway-357427797651.asia-southeast1.run.app/charges/${chargeId}/force`);
+  await expect(forcePage.getByText('1800.00 THB')).toBeVisible();
+
+  const [forcePaymentResponse] = await Promise.all([
+    forcePage.waitForResponse((response) => response.url().includes(`/api/charges/${chargeId}`)),
+    forcePage.getByRole('button', { name: 'Mark as Succeeded' }).click(),
+  ]);
+
+  expect(forcePaymentResponse.ok()).toBeTruthy();
+  await forcePage.close();
+
+  // Step 7: reload หน้า payment เพื่อให้ Beam อ่านสถานะล่าสุดและพาไปหน้า success
+  await page.waitForTimeout(2000);
+  await page.reload({ waitUntil: 'domcontentloaded' });
+
+  // Step 8: ยืนยันผลลัพธ์สุดท้ายว่าชำระเงินและลงทะเบียนสำเร็จ
+  await expect(page.getByText('ชำระเงินสำเร็จ')).toBeVisible({ timeout: 30000 });
+  await expect(page.getByText('1,800.00 บาท', { exact: true }).first()).toBeVisible();
+  await expect(page.getByText('เจอกันที่สนามแข่ง!')).toBeVisible({ timeout: 30000 });
 });
+
+
+//npx playwright test TC_014.spec --headed

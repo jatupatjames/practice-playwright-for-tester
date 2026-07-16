@@ -113,6 +113,7 @@ export async function fillTaxInvoice(page: Page, info: TaxInvoiceInfo) {
   await expect(page.locator('div').filter({ hasText: new RegExp(`^${info.subDistrict}$`) }).nth(3)).toBeVisible();
   await expect(page.locator('div').filter({ hasText: new RegExp(`^${info.district}$`) }).nth(3)).toBeVisible();
   await expect(page.locator('div').filter({ hasText: new RegExp(`^${info.province}$`) }).nth(3)).toBeVisible();
+}
 // Select Date Picker (รับค่า dd/mm/yyyy)
 export async function selectDatePicker(page: Page, datePickerLocator: string, date: string) {
     const [dd, mm, yyyy] = date.split('/');

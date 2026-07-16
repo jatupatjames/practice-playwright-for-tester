@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { selectCheckbox , scrollModal,click,input, SelectDateFromDatePicker, selectDropdown,UploadAuthorizeFile, selectShirtSize, selectRaceDate} from '../action/Actions';
+import { selectCheckbox , scrollModal,click,input, SelectDateFromDatePicker, selectDropdown,UploadAuthorizeFile, selectShirtSize, selectRaceDate,payByCreditCard} from '../action/Actions';
 import { checkboxName } from '../data/Actions';
 import { login } from '../action/Auth';
 import { loginInfo } from '../data/login';
@@ -37,6 +37,7 @@ test('Function Checkbox', async ({ page }) => {
 
   //เลือก country
   await selectDropdown(page,racerInfo.country,racer.country);
+  await page.pause();
 
   //เลือก gender
   await page.getByText('ชาย (Boy)').click();
@@ -65,11 +66,7 @@ test('Function Checkbox', async ({ page }) => {
   await click(page, summary.proceedToPayment);
 
   //Payment Page
-  // await input(page, payment.cardNo, cardInfo.cardNo);
-  // await input(page, payment.expDate, cardInfo.expDate);
-  // await input(page, payment.cvv, cardInfo.cvv);
-  // await input(page, payment.nameOnCard, cardInfo.nameOnCard);
-  // await click(page, payment.paymentButton);
+  await payByCreditCard(page,);
 
   await page.pause();
   

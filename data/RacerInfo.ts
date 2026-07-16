@@ -22,7 +22,6 @@ racerGpNo : '',
 dateOfBirth: '20/05/2020',
 shirtSize: 'M',
 category: 'รุ่นอายุ 5 ปี "A" (5.7-6.0 Years Old) - 1,200 ฿'
-
 }
 
 export const racerJapan = {

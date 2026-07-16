@@ -10,6 +10,7 @@ import { uploadFileData } from '../data/fileUpload';
 import { Btn } from '../locator/Button';
 import { expect } from '@playwright/test';
 import { guardian } from '../data/Guardian';
+import { masterCardData } from '../data/Mastercard.ts';
 
 test('TC_013', async ({ page }) => {
 
@@ -72,7 +73,7 @@ test('TC_013', async ({ page }) => {
 
     //กรอกข้อมูลบัตรเครดิต
 
-    await payByCreditCard(page);
+    await payByCreditCard(page, masterCardData);
     await page.pause();
 
 });

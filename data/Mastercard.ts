@@ -5,7 +5,7 @@ export interface MasterCardData {
   nameAccount: string;
 }
 
-export const masterCard: MasterCardData = {
+export const masterCardData: MasterCardData = {
   accountID: '5372074248113841',
   expiryDate: '12/30',
   CVC: '123',

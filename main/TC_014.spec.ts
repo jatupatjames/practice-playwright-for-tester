@@ -13,6 +13,8 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('TC_014', async ({ page }) => {
+  test.setTimeout(120000);
+
   // เลือกกิจกรรม
   await clickButton(page, 'RegisterMore');
   await clickButton(page, 'SelectCompetition');
@@ -86,36 +88,34 @@ test('TC_014', async ({ page }) => {
 
   // Step 3: เตรียมดัก chargeId ของรายการจ่ายเงินรอบนี้จาก network response
   // ต้องใช้ chargeId ของรอบปัจจุบัน เพราะ Beam สร้าง id ใหม่ทุกครั้งที่กดชำระเงิน
-  const chargeIds = new Set<string>();
-
-  page.on('response', async (response) => {
+  const chargeResponsePromise = page.waitForResponse(async (response) => {
     const url = response.url();
-    if (!url.includes('sandbox-gateway') && !url.includes('beamcheckout')) return;
+    if (!url.includes('sandbox-gateway') && !url.includes('beamcheckout')) return false;
 
     const chargeIdFromUrl = url.match(/c_[A-Za-z0-9]+/)?.[0];
-    if (chargeIdFromUrl) {
-      chargeIds.add(chargeIdFromUrl);
-      return;
-    }
+    if (chargeIdFromUrl) return true;
 
     try {
       const responseBody = await response.text();
-      const chargeIdFromBody = responseBody.match(/c_[A-Za-z0-9]+/)?.[0];
-      if (chargeIdFromBody) chargeIds.add(chargeIdFromBody);
+      return /c_[A-Za-z0-9]+/.test(responseBody);
     } catch {
       // บาง response ของ third-party อ่าน body ไม่ได้ ให้ข้ามไปเพื่อรอ response อื่น
+      return false;
     }
-  });
+  }, { timeout: 30000 });
 
   // Step 4: กดปุ่มชำระเงิน เพื่อให้ Beam สร้าง QR และ chargeId
   await clickButton(page, 'Pay1800');
+  const chargeResponse = await chargeResponsePromise;
 
   // Step 5: ยืนยันว่า QR PromptPay แสดงถูกต้อง พร้อมยอด 1,800 บาท
   await expect(page.getByAltText('QR_PROMPT_PAY')).toBeVisible({ timeout: 30000 });
   await expect(page.getByText(/1,800\.00\s*บาท/).first()).toBeVisible();
-  await page.waitForTimeout(1000);
 
-  const chargeId = [...chargeIds].at(-1);
+  const chargeResponseBody = await chargeResponse.text().catch(() => '');
+  const chargeId =
+    chargeResponse.url().match(/c_[A-Za-z0-9]+/)?.[0] ??
+    chargeResponseBody.match(/c_[A-Za-z0-9]+/)?.[0];
   if (!chargeId) {
     throw new Error('Charge ID not found from payment network response');
   }
@@ -135,13 +135,26 @@ test('TC_014', async ({ page }) => {
   await forcePage.close();
 
   // Step 7: reload หน้า payment เพื่อให้ Beam อ่านสถานะล่าสุดและพาไปหน้า success
-  await page.waitForTimeout(2000);
-  await page.reload({ waitUntil: 'domcontentloaded' });
+  await expect(async () => {
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await expect(page.getByText('ชำระเงินสำเร็จ')).toBeVisible({ timeout: 5000 });
+  }).toPass({
+    timeout: 30000,
+    intervals: [1000, 2000, 3000],
+  });
 
-  // Step 8: ยืนยันผลลัพธ์สุดท้ายว่าชำระเงินและลงทะเบียนสำเร็จ
+  // Step 8: ยืนยันผลการชำระเงินบนหน้า Beam
   await expect(page.getByText('ชำระเงินสำเร็จ')).toBeVisible({ timeout: 30000 });
   await expect(page.getByText('1,800.00 บาท', { exact: true }).first()).toBeVisible();
-  await expect(page.getByText('เจอกันที่สนามแข่ง!')).toBeVisible({ timeout: 30000 });
+
+  // Step 9: รอ Beam redirect กลับหน้า success ของ Runbike แล้วตรวจผลการลงทะเบียน
+  const runbikeSuccessUrl = /runbike-event\.web\.app\/payment-success/;
+  await page.waitForURL(runbikeSuccessUrl, {
+    timeout: 30000,
+    waitUntil: 'domcontentloaded',
+  });
+
+  await expect(page.getByText('เจอกันที่สนามแข่ง!')).toBeVisible({ timeout: 5000 });
 });
 
 
